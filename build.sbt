@@ -30,22 +30,20 @@ lazy val rules = project.settings(
   scalafmtOnCompile := true
 )
 
-lazy val input = project.settings(
-  skip in publish := true
-)
-
-lazy val output = project.settings(
-  skip in publish := true
-)
+lazy val input  = project.configure(scalafixTestModule)
+lazy val output = project.configure(scalafixTestModule)
 
 lazy val tests = project
   .dependsOn(rules)
+  .configure(scalafixTestModule)
   .enablePlugins(ScalafixTestkitPlugin)
   .settings(
-    skip in publish := true,
     libraryDependencies += "ch.epfl.scala" % "scalafix-testkit" % V.scalafixVersion % Test cross CrossVersion.full,
     Compile / compile := (Compile / compile).dependsOn(input / Compile / compile).value,
     scalafixTestkitOutputSourceDirectories := (output / Compile / sourceDirectories).value,
     scalafixTestkitInputSourceDirectories := (input / Compile / sourceDirectories).value,
     scalafixTestkitInputClasspath := (input / Compile / fullClasspath).value
   )
+
+def scalafixTestModule(project: Project) =
+  project.disablePlugins(ScalafmtPlugin).settings(skip in publish := true)
