@@ -1,0 +1,21 @@
+language: scala
+
+scala:
+  - 2.12.10
+
+jdk:
+  - openjdk8
+
+cache:
+  directories:
+    - $HOME/.ivy2/cache
+    - $HOME/.sbt
+    - $HOME/.cache/coursier
+
+script:
+  - sbt scalafmtSbtCheck scalafmtCheckAll test
+
+# whitelist only master branch
+branches:
+  only:
+    - master
