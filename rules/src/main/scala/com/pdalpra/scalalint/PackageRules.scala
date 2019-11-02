@@ -10,7 +10,6 @@ object PackageRules {
 }
 class PackageRules(config: PackageRulesConfiguration)
     extends ConfiguredSyntacticRule("ScalalintPackages", PackageRulesConfiguration()) {
-
   import PackageRules._
 
   def this() = this(PackageRulesConfiguration())
