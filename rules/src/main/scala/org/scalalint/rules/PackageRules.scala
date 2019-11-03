@@ -1,8 +1,9 @@
-package com.pdalpra.scalalint
+package org.scalalint.rules
+
+import org.scalalint.configurations.PackageRulesConfiguration
+import org.scalalint.{ ConfiguredSyntacticRule, Violation }
 
 import scala.meta._
-
-import com.pdalpra.scalalint.configurations.PackageRulesConfiguration
 import scalafix.v1._
 
 object PackageRules {

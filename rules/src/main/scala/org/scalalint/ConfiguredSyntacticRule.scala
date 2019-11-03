@@ -1,9 +1,9 @@
-package com.pdalpra.scalalint
+package org.scalalint
 
-import metaconfig.{ConfDecoder, Configured}
+import metaconfig.{ ConfDecoder, Configured }
 import scalafix.v1._
 
-abstract class ConfiguredSemanticRule[C: ConfDecoder](rule: RuleName, defaultConfig: C) extends SemanticRule(rule) {
+abstract class ConfiguredSyntacticRule[C: ConfDecoder](rule: RuleName, defaultConfig: C) extends SyntacticRule(rule) {
   def configured(ruleConfig: C): Rule
 
   override def withConfiguration(config: Configuration): Configured[Rule] =

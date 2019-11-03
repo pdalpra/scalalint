@@ -2,15 +2,15 @@ lazy val V = _root_.scalafix.sbt.BuildInfo
 
 inThisBuild(
   List(
-    organization := "com.pdalpra",
-    homepage := Some(url("https://github.com/pdalpra/scalalint")),
+    organization := "org.scalalint",
+    homepage := Some(url("https://www.scalalint.org")),
     licenses := List("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")),
     developers := List(
       Developer(
         "pdalpra",
         "Pierre Dal-Pra",
         "dalpra.pierre@gmail.com",
-        url("https://github.com/pdalpra/scalalint")
+        url("https://www.scalalint.org")
       )
     ),
     scalaVersion := V.scala212,
@@ -25,7 +25,7 @@ inThisBuild(
 skip in publish := true
 
 lazy val rules = project.settings(
-  moduleName := "scalafix",
+  moduleName := "rules",
   libraryDependencies += "ch.epfl.scala" %% "scalafix-core" % V.scalafixVersion,
   scalafmtOnCompile := true
 )

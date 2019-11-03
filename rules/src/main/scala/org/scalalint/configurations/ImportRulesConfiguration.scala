@@ -1,4 +1,4 @@
-package com.pdalpra.scalalint.configurations
+package org.scalalint.configurations
 
 import metaconfig.ConfDecoder
 import metaconfig.generic._

@@ -1,2 +1,2 @@
-com.pdalpra.scalalint.ImportRules
-com.pdalpra.scalalint.PackageRules
+org.scalalint.rules.ImportRules
+org.scalalint.rules.PackageRules
