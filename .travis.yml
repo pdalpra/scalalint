@@ -12,10 +12,23 @@ cache:
     - $HOME/.sbt
     - $HOME/.cache/coursier
 
-script:
-  - sbt scalafmtSbtCheck scalafmtCheckAll test
+before_install:
+  - git fetch --tags
+
+stages:
+  - name: test
+  - name: release
+    if: ((branch = master AND type = push) OR (tag IS present)) AND NOT fork
+
+jobs:
+  include:
+    - name: test
+      script: sbt scalafmtSbtCheck scalafmtCheckAll test
+    - stage: release
+      script: sbt ci-release
 
 # whitelist only master branch
 branches:
   only:
     - master
+    - /^v\d+\.\d+(\.\d+)?(-\S*)?$/
