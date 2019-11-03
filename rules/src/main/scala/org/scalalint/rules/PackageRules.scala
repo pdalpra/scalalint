@@ -20,7 +20,10 @@ class PackageRules(config: PackageRulesConfiguration)
 
   override def fix(implicit doc: SyntacticDocument): Patch =
     doc.tree.collect {
-      case outerPackage: Pkg =>
-        outerPackage.stats.collect { case innerPackage: Pkg => Patch.lint(ChainedPackage(innerPackage)) }.asPatch
+      case pkg: Pkg =>
+        if (config.disableRelativePackages)
+          pkg.stats.collect { case innerPackage: Pkg => Patch.lint(ChainedPackage(innerPackage)) }.asPatch
+        else
+          Patch.empty
     }.asPatch
 }
