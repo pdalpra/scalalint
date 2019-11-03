@@ -1,6 +1,6 @@
 /*
 rule = ScalalintImports
-ScalalintImports.wildcardThreshold = 3
+ScalalintImports.rewriteWildcardThreshold = 3
  */
 
 import java.time.{ LocalDateTime, Clock}

@@ -8,9 +8,9 @@ object ImportRulesConfiguration {
   implicit val decoder: ConfDecoder[ImportRulesConfiguration] = deriveDecoder(ImportRulesConfiguration())
 }
 final case class ImportRulesConfiguration(
-    disableRelativeImports: Boolean = true,
+    disableBlockImports: Boolean = false,
+    disableRelativeImports: Boolean = false,
     disableWildcardImports: Boolean = false,
-    disableGroupImports: Boolean = false,
     forbiddenImports: List[String] = Nil,
-    wildcardThreshold: Option[Int] = None
+    rewriteWildcardThreshold: Option[Int] = None
 )
