@@ -1,8 +1,9 @@
-package com.pdalpra.scalalint
+package org.scalalint.rules
+
+import org.scalalint.configurations.ImportRulesConfiguration
+import org.scalalint.{ ConfiguredSemanticRule, Violation }
 
 import scala.meta._
-
-import com.pdalpra.scalalint.configurations.ImportRulesConfiguration
 import scalafix.v1._
 
 object ImportRules {

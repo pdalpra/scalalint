@@ -1,4 +1,4 @@
-package com.pdalpra.scalalint
+package org.scalalint
 
 import scala.meta._
 import scalafix.v1._
