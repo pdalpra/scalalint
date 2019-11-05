@@ -1,0 +1,11 @@
+name: Scalalint
+baseurl: ''
+description: A Scala linter based on Scalafix
+highlighter: rouge
+docs: true
+collections:
+  tut:
+    output: true
+version: 0.1.1
+org: org.scalalint
+markdown: kramdown
