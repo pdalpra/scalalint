@@ -68,7 +68,7 @@ lazy val docs = project
     micrositeGitterChannelUrl := "scalalint/scalalint",
     micrositeShareOnSocial := false,
     micrositeEditButton := Some(
-      MicrositeEditButton("Improve this Page", "/edit/master/site/src/main/tut/{{ page.path }}")
+      MicrositeEditButton("Improve this Page", "/edit/master/docs/src/main/tut/{{ page.path }}")
     )
   )
 
