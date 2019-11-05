@@ -1,3 +1,5 @@
+import microsites.MicrositeEditButton
+
 lazy val V = _root_.scalafix.sbt.BuildInfo
 
 inThisBuild(
@@ -47,6 +49,27 @@ lazy val tests = project
     scalafixTestkitOutputSourceDirectories := (output / Compile / sourceDirectories).value,
     scalafixTestkitInputSourceDirectories := (input / Compile / sourceDirectories).value,
     scalafixTestkitInputClasspath := (input / Compile / fullClasspath).value
+  )
+
+lazy val docs = project
+  .enablePlugins(MicrositesPlugin)
+  .settings(
+    micrositeName := "Scalalint",
+    micrositeDescription := "A Scala linter based on Scalafix",
+    micrositeUrl := "https://www.scalalint.org",
+    micrositeDocumentationUrl := "/docs",
+    micrositeAuthor := "Pierre Dal-Pra",
+    micrositeTwitter := "@pierre_dalpra",
+    micrositeGithubOwner := "pdalpra",
+    micrositeGithubRepo := "scalalint",
+    micrositePushSiteWith := GitHub4s,
+    micrositeGithubToken := sys.env.get("GITHUB_TOKEN"),
+    micrositeGitterChannel := true,
+    micrositeGitterChannelUrl := "scalalint/scalalint",
+    micrositeShareOnSocial := false,
+    micrositeEditButton := Some(
+      MicrositeEditButton("Improve this Page", "/edit/master/site/src/main/tut/{{ page.path }}")
+    )
   )
 
 def scalafixTestModule(project: Project) =
