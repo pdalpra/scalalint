@@ -1,0 +1,7 @@
+options:
+  - title: Getting Started
+    url: docs/
+  - title: Rules
+    url: docs/rules.html
+  - title: Motivation
+    url: docs/motivation.html

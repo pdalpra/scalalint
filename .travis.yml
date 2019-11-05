@@ -1,8 +1,5 @@
 language: scala
 
-scala:
-  - 2.12.10
-
 jdk:
   - openjdk8
 
@@ -14,9 +11,17 @@ cache:
 
 before_install:
   - git fetch --tags
+  - export PATH=${PATH}:./vendor/bundle
+
+install:
+  - rvm use 2.6.0 --install --fuzzy
+  - gem update --system
+  - gem install sass
+  - gem install jekyll -v 3.8.5
 
 stages:
   - name: test
+  - name: buildSite
   - name: release
     if: ((branch = master AND type = push) OR (tag IS present)) AND NOT fork
 
@@ -24,10 +29,12 @@ jobs:
   include:
     - name: test
       script: sbt scalafmtSbtCheck scalafmtCheckAll test
+    - name: buildSite
+      script: sbt makeMicrosite
     - stage: release
-      script: sbt ci-release
+      script: sbt ci-release docs/publishMicrosite
 
-# whitelist only master branch
+# whitelist only master branch and tags
 branches:
   only:
     - master
