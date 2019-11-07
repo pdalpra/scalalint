@@ -27,6 +27,7 @@ final case class ImportRulesConfiguration(
     disableBlockImports: Boolean = false,
     disableRelativeImports: Boolean = true,
     disableWildcardImports: Boolean = false,
+    ensureImportsAreGrouped: Boolean = false,
     forbiddenImports: List[String] = Nil,
     rewriteWildcardThreshold: Option[Int] = None
 )
