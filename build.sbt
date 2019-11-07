@@ -54,6 +54,7 @@ lazy val tests = project
 lazy val docs = project
   .enablePlugins(MicrositesPlugin)
   .settings(
+    skip in publish := true,
     micrositeName := "Scalalint",
     micrositeDescription := "A Scala linter based on Scalafix",
     micrositeUrl := "https://www.scalalint.org",
