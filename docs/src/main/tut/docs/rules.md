@@ -61,6 +61,30 @@ One might want to disable wildcard imports as a policy and prefer explicit impor
 import scala.concurrent.duration._
 ```
 
+### ensureImportsAreGrouped
+
+* **Kind**: Lint
+* **Type**: `Boolean`
+* **Default**: `false`
+
+**Justification**:
+
+If imports are not grouped and rather spread throughout the file, knowing what is in scope is difficult.
+
+```scala
+import scala.concurrent.duration._
+import scala.concurrent.Future
+
+object MyObject {
+  import java.nio.file.Path    // would be forbidden with ScalalintImports.ensureImportsAreGrouped = true
+
+  def deleteFile(path: Path): Unit = {
+    import java.nio.file.Files // would be forbidden with ScalalintImports.ensureImportsAreGrouped = true
+    Files.deleteIfExists(path)
+  }
+}
+```
+
 ### forbiddenImports
 
 * **Kind**: Lint

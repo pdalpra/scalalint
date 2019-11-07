@@ -16,10 +16,13 @@
 
 package org.scalalint.rules
 
+import scala.annotation.tailrec
+
 import org.scalalint.configurations.ImportRulesConfiguration
 import org.scalalint.{ ConfiguredSemanticRule, Violation }
 
 import scala.meta._
+import scalafix.util.Trivia
 import scalafix.v1._
 
 object ImportRules {
@@ -27,6 +30,7 @@ object ImportRules {
   final case class BlockImport(tree: Importer)    extends Violation(tree, "Block imports are disallowed")
   final case class WildcardImport(tree: Importer) extends Violation(tree, "Wildcard imports are disallowed")
   final case class RelativeImport(tree: Importer) extends Violation(tree, s"Relative imports are disallowed")
+  final case class UngroupedImport(tree: Import)  extends Violation(tree, s"Imports must be grouped together")
 }
 class ImportRules(config: ImportRulesConfiguration)
     extends ConfiguredSemanticRule("ScalalintImports", ImportRulesConfiguration()) {
@@ -38,9 +42,14 @@ class ImportRules(config: ImportRulesConfiguration)
     new ImportRules(config)
 
   override def fix(implicit doc: SemanticDocument): Patch = {
-    val importedPackages = doc.tree.collect { case importer: Importer => importer.ref.syntax }
+    val imports             = doc.tree.collect { case tree: Import => tree }
+    val importedPackages    = imports.flatMap(_.importers.map(_.ref.syntax))
+    val topLevelImportGroup = findTopLevelImportGroup(doc, imports)
 
     doc.tree.collect {
+      case tree: Import =>
+        checkImportsAreGrouped(tree, topLevelImportGroup)
+
       case importer: Importer =>
         List(
           checkBlockImport(importer),
@@ -85,6 +94,28 @@ class ImportRules(config: ImportRulesConfiguration)
       else
         Patch.empty
     }).asPatch
+
+  private def checkImportsAreGrouped(tree: Import, topLevelImportGroup: List[Import]): Patch =
+    if (config.ensureImportsAreGrouped && !topLevelImportGroup.contains(tree))
+      Patch.lint(UngroupedImport(tree))
+    else
+      Patch.empty
+
+  private def findTopLevelImportGroup(doc: SemanticDocument, imports: List[Import]): List[Import] =
+    if (imports.size == 1) imports
+    else longestImportChain(imports, doc, Nil)
+
+  @tailrec
+  private def longestImportChain(imports: List[Import], doc: SemanticDocument, acc: List[Import]): List[Import] =
+    imports match {
+      case Nil          => acc.reverse
+      case first :: Nil => (first :: acc).reverse
+      case first :: second :: rest =>
+        if (doc.tokenList.slice(doc.tokenList.next(first.tokens.last), second.tokens.head).forall(_.is[Trivia]))
+          longestImportChain(rest, doc, second :: first :: acc)
+        else
+          longestImportChain(List(first), doc, acc)
+    }
 
   private def rewriteToWildcardImport(importer: Importer): Patch =
     if (config.rewriteWildcardThreshold.exists(importer.importees.size >= _))
