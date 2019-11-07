@@ -6,6 +6,6 @@ docs: true
 collections:
   tut:
     output: true
-version: 0.1.2
+version: 0.1.2+2-b9a69207-SNAPSHOT
 org: org.scalalint
 markdown: kramdown
