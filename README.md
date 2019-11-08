@@ -17,4 +17,4 @@ Then enable Scalalint rules in your build, in `build.sbt`:
 scalafixDependencies in ThisBuild += "org.scalalint" %% "rules" % "0.1.2"
 ```
 
-For more information, head to the [microsite](https://scalalint.org) !
+For more information, head to the [microsite](https://www.scalalint.org) !
