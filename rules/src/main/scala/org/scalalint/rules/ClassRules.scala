@@ -20,6 +20,8 @@ import org.scalalint.configurations.ClassRulesConfiguration
 import org.scalalint.{ ConfiguredSemanticRule, RichSymbol, Violation }
 
 import scala.meta._
+import scala.meta.tokens.Token.RightBrace
+import scalafix.util.{ Compat, Newline, Whitespace }
 import scalafix.v1._
 
 object ClassRules {
@@ -49,7 +51,8 @@ class ClassRules(config: ClassRulesConfiguration)
       case defn: ClassOrTrait =>
         List(
           checkNonFinalCaseClass(defn),
-          checkLeakingSealed(defn, sealedDefs)
+          checkLeakingSealed(defn, sealedDefs),
+          removeBracesOnEmptyBody(defn)
         ).asPatch
     }.asPatch
   }
@@ -67,5 +70,25 @@ class ClassRules(config: ClassRulesConfiguration)
       Patch.lint(LeakingSealed(defn))
     else
       Patch.empty
+
+  private def removeBracesOnEmptyBody(defn: ClassOrTrait)(implicit doc: SemanticDocument): Patch =
+    if (config.removeBracesOnEmptyBody)
+      classBody(defn)
+        .filter(body => body.slice(1, body.size - 1).forall(token => token.is[Newline] || token.is[Whitespace]))
+        .map { body =>
+          val leftBrace                     = body.head
+          val rightBrace                    = body.last
+          val leadingWhitespacesOrLeftBrace = doc.tokenList.leadingSpaces(leftBrace).lastOption.getOrElse(leftBrace)
+          Patch.removeTokens(doc.tokenList.slice(leadingWhitespacesOrLeftBrace, doc.tokenList.next(rightBrace)))
+        }
+        .asPatch
+    else Patch.empty
+
+  private def classBody(defn: ClassOrTrait)(implicit doc: SemanticDocument): Option[Compat.SeqView[Token]] =
+    for {
+      rightBrace <- defn.tokens.lastOption.collect { case brace: RightBrace => brace }
+      leftBrace  <- doc.matchingParens.open(rightBrace)
+      bodyTokens = doc.tokenList.slice(leftBrace, doc.tokenList.next(rightBrace))
+    } yield bodyTokens
 
 }
