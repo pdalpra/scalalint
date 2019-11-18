@@ -15,7 +15,7 @@ addSbtPlugin("ch.epfl.scala" % "sbt-scalafix" % "0.9.8")
 Then add Scalalint rules library in your build, in `build.sbt`:
 
 ```scala
-scalafixDependencies in ThisBuild += "org.scalalint" %% "rules" % "0.1.2"
+scalafixDependencies in ThisBuild += "org.scalalint" %% "rules" % "0.1.4"
 ```
 
 ## Configuration
