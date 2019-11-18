@@ -44,13 +44,41 @@ However, a sealed trait or class can "leak" if one of its implementing classes o
 This can lead to surprising behaviors and silently breaks pattern matching exhaustiveness checking.
 
 ```scala
-
 sealed trait Foo
 
 // sealed trait Foo leaks through class 'Bar', forbidden by default with ScalalintClasses 
 class Bar extends Foo
 // sealed trait Foo leaks through trait 'Quz', forbidden by default with ScalalintClasses
 trait Quz extends Foo
+```
+
+### removeBracesOnEmptyBody
+
+* **Kind**: Lint
+* **Type**: `Boolean`
+* **Default**: `true`
+
+**Justification**:
+
+If a class/trait has no body, braces are redundant and can be removed.
+
+```scala
+// Redundant braces, will be removed by removeBracesOnEmptyBody = true
+class Foo {}
+```
+### removeEmptyConstructor
+
+* **Kind**: Lint
+* **Type**: `Boolean`
+* **Default**: `true`
+
+**Justification**:
+
+If a class public constructor has no parameters, it is redundant and can be removed.
+
+```scala
+// Redundant empty constructor, will be removed by removeEmptyConstructor = true
+class Foo()
 ```
 
 ## ScalalintImports
