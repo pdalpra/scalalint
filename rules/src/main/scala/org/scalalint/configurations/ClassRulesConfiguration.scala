@@ -25,5 +25,7 @@ object ClassRulesConfiguration {
 }
 final case class ClassRulesConfiguration(
     finalCaseClass: Boolean = true,
-    leakingSealed: Boolean = true
+    leakingSealed: Boolean = true,
+    removeBracesOnEmptyBody: Boolean = true,
+    removeEmptyConstructor: Boolean = true
 )

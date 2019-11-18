@@ -19,7 +19,10 @@ package org.scalalint.rules
 import org.scalalint.configurations.ClassRulesConfiguration
 import org.scalalint.{ ConfiguredSemanticRule, RichSymbol, Violation }
 
+import scala.meta.Mod.Private
 import scala.meta._
+import scala.meta.tokens.Token.RightBrace
+import scalafix.util.{ Compat, Newline, Whitespace }
 import scalafix.v1._
 
 object ClassRules {
@@ -49,7 +52,9 @@ class ClassRules(config: ClassRulesConfiguration)
       case defn: ClassOrTrait =>
         List(
           checkNonFinalCaseClass(defn),
-          checkLeakingSealed(defn, sealedDefs)
+          checkLeakingSealed(defn, sealedDefs),
+          removeBracesOnEmptyBody(defn),
+          removeEmptyConstructor(defn)
         ).asPatch
     }.asPatch
   }
@@ -61,11 +66,45 @@ class ClassRules(config: ClassRulesConfiguration)
       Patch.empty
 
   private def checkLeakingSealed(defn: ClassOrTrait, sealedDefs: Set[Symbol])(implicit doc: SemanticDocument): Patch =
-    if (config.leakingSealed && defn.symbol.info.exists(info => !(info.isFinal || info.isSealed)) && defn.symbol.classHierarchy
-          .intersect(sealedDefs)
-          .nonEmpty)
+    if (config.leakingSealed &&
+        defn.symbol.info.exists(info => !(info.isFinal || info.isSealed)) &&
+        defn.symbol.classHierarchy.intersect(sealedDefs).nonEmpty)
       Patch.lint(LeakingSealed(defn))
     else
       Patch.empty
+
+  private def removeBracesOnEmptyBody(defn: ClassOrTrait)(implicit doc: SemanticDocument): Patch =
+    if (config.removeBracesOnEmptyBody)
+      classBody(defn)
+        .filter(body => body.slice(1, body.size - 1).forall(token => token.is[Newline] || token.is[Whitespace]))
+        .map { body =>
+          val leftBrace           = body.head
+          val rightBrace          = body.last
+          val firstTokenAfterType = doc.tokenList.leadingSpaces(leftBrace).lastOption.getOrElse(leftBrace)
+          Patch.removeTokens(doc.tokenList.slice(firstTokenAfterType, doc.tokenList.next(rightBrace)))
+        }
+        .asPatch
+    else
+      Patch.empty
+
+  private def removeEmptyConstructor(defn: ClassOrTrait)(implicit doc: SemanticDocument): Patch =
+    if (config.removeEmptyConstructor)
+      defn.collect {
+        case c: Defn.Class =>
+          val constructor = c.ctor
+          if (constructor.symbol.info.exists(_.isPublic) && constructor.paramss.headOption.exists(_.isEmpty))
+            Patch.removeTokens(constructor.tokens)
+          else
+            Patch.empty
+      }.asPatch
+    else
+      Patch.empty
+
+  private def classBody(defn: ClassOrTrait)(implicit doc: SemanticDocument): Option[Compat.SeqView[Token]] =
+    for {
+      rightBrace <- defn.tokens.lastOption.collect { case brace: RightBrace => brace }
+      leftBrace  <- doc.matchingParens.open(rightBrace)
+      bodyTokens = doc.tokenList.slice(leftBrace, doc.tokenList.next(rightBrace))
+    } yield bodyTokens
 
 }
