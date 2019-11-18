@@ -19,6 +19,7 @@ package org.scalalint.rules
 import org.scalalint.configurations.ClassRulesConfiguration
 import org.scalalint.{ ConfiguredSemanticRule, RichSymbol, Violation }
 
+import scala.meta.Mod.Private
 import scala.meta._
 import scala.meta.tokens.Token.RightBrace
 import scalafix.util.{ Compat, Newline, Whitespace }
@@ -52,7 +53,8 @@ class ClassRules(config: ClassRulesConfiguration)
         List(
           checkNonFinalCaseClass(defn),
           checkLeakingSealed(defn, sealedDefs),
-          removeBracesOnEmptyBody(defn)
+          removeBracesOnEmptyBody(defn),
+          removeEmptyConstructor(defn)
         ).asPatch
     }.asPatch
   }
@@ -64,9 +66,9 @@ class ClassRules(config: ClassRulesConfiguration)
       Patch.empty
 
   private def checkLeakingSealed(defn: ClassOrTrait, sealedDefs: Set[Symbol])(implicit doc: SemanticDocument): Patch =
-    if (config.leakingSealed && defn.symbol.info.exists(info => !(info.isFinal || info.isSealed)) && defn.symbol.classHierarchy
-          .intersect(sealedDefs)
-          .nonEmpty)
+    if (config.leakingSealed &&
+        defn.symbol.info.exists(info => !(info.isFinal || info.isSealed)) &&
+        defn.symbol.classHierarchy.intersect(sealedDefs).nonEmpty)
       Patch.lint(LeakingSealed(defn))
     else
       Patch.empty
@@ -76,13 +78,27 @@ class ClassRules(config: ClassRulesConfiguration)
       classBody(defn)
         .filter(body => body.slice(1, body.size - 1).forall(token => token.is[Newline] || token.is[Whitespace]))
         .map { body =>
-          val leftBrace                     = body.head
-          val rightBrace                    = body.last
-          val leadingWhitespacesOrLeftBrace = doc.tokenList.leadingSpaces(leftBrace).lastOption.getOrElse(leftBrace)
-          Patch.removeTokens(doc.tokenList.slice(leadingWhitespacesOrLeftBrace, doc.tokenList.next(rightBrace)))
+          val leftBrace           = body.head
+          val rightBrace          = body.last
+          val firstTokenAfterType = doc.tokenList.leadingSpaces(leftBrace).lastOption.getOrElse(leftBrace)
+          Patch.removeTokens(doc.tokenList.slice(firstTokenAfterType, doc.tokenList.next(rightBrace)))
         }
         .asPatch
-    else Patch.empty
+    else
+      Patch.empty
+
+  private def removeEmptyConstructor(defn: ClassOrTrait)(implicit doc: SemanticDocument): Patch =
+    if (config.removeEmptyConstructor)
+      defn.collect {
+        case c: Defn.Class =>
+          val constructor = c.ctor
+          if (constructor.symbol.info.exists(_.isPublic) && constructor.paramss.headOption.exists(_.isEmpty))
+            Patch.removeTokens(constructor.tokens)
+          else
+            Patch.empty
+      }.asPatch
+    else
+      Patch.empty
 
   private def classBody(defn: ClassOrTrait)(implicit doc: SemanticDocument): Option[Compat.SeqView[Token]] =
     for {
