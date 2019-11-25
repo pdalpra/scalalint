@@ -1,3 +1,4 @@
 org.scalalint.rules.ClassRules
 org.scalalint.rules.ImportRules
+org.scalalint.rules.InferenceRules
 org.scalalint.rules.PackageRules

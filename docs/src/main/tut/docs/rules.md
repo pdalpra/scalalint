@@ -9,6 +9,7 @@ The following rules are currently available in Scalalint:
 
 * [ScalalintClasses](#scalalintclasses)
 * [ScalalintImports](#scalalintimports)
+* [ScalalintInference](#scalalintinference)
 * [ScalalintPackages](#scalalintpackages)
 
 Those are only 'meta rules', head below to the rules documentation to find which lints and rewrites are available
@@ -186,6 +187,43 @@ import scala.util.{ Try, Success, Failure, Random, Properties }
 // with ScalaImports.rewriteWildcardThreshold = 5
 import scala.util._
 ```
+
+## ScalalintInference
+
+### noPublicInference
+
+* **Kind**: Lint
+* **Type**: `Boolean`
+* **Default**: `false`
+
+**Justification**:
+
+Public members should always have explicit type annotations to ensure that public APIs have documented return types and not risk inferring over specific types.
+
+```scala
+def myOption = Some("") // Infers Some[String], not Option[String]
+
+sealed trait ADT
+case object A extends ADT
+case object B extends ADT
+
+def values = List(A, B) // Infers List[Product with Serializable with ADT], not List[ADT]
+```
+
+### noInferXXX
+
+* **Kind**: Lint
+* **Type**: `Boolean`
+* **Default**: `true`, except `noInferNothing`
+
+**Justification**:
+
+* `noInferAny`/`noInferAnyVal`/`noInferAnyRef`/`noInferObject`: Inferring those types is most often hint of an code issue, as this means 
+  that unrelated types are mixed together and the compiler had to infer one of the root types of Scala/Java type systems 
+* `noInferProduct`/`noInferSerializable`: `Product` & `Serializable` are often inferred by the compiler, eg. when ADTs values are mixed
+  with generics are put in a List.
+* `noInferNothing`: although inferring `Nothing` could be hint of an issue, it is however common to use it and leaves 'holes' in types
+  that can filled later, eg. `Right("")` infers `Either[Nothing, String]`, with `Left` being filled later).
 
 ## ScalalintPackages
 
