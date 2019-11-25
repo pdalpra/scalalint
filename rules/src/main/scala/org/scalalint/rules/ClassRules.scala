@@ -19,7 +19,6 @@ package org.scalalint.rules
 import org.scalalint.configurations.ClassRulesConfiguration
 import org.scalalint.{ ConfiguredSemanticRule, RichSymbol, Violation }
 
-import scala.meta.Mod.Private
 import scala.meta._
 import scala.meta.tokens.Token.RightBrace
 import scalafix.util.{ Compat, Newline, Whitespace }
