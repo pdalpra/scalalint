@@ -1,0 +1,264 @@
+<html><head><title>Scalalint: Rules</title><meta charset="utf-8" /><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Pierre Dal-Pra" /><meta name="description" content="A Scala linter based on Scalafix" /><meta name="og:image" content="/img/poster.png" /><meta name="image" property="og:image" content="/img/poster.png" /><meta name="og:title" content="Scalalint: Rules" /><meta name="title" property="og:title" content="Scalalint: Rules" /><meta name="og:site_name" content="Scalalint" /><meta name="og:url" content="https://www.scalalint.org" /><meta name="og:type" content="website" /><meta name="og:description" content="A Scala linter based on Scalafix" /><link rel="icon" type="image/png" href="/img/favicon.png" /><meta name="twitter:title" content="Scalalint: Rules" /><meta name="twitter:image" content="https://www.scalalint.org/img/poster.png" /><meta name="twitter:description" content="A Scala linter based on Scalafix" /><meta name="twitter:card" content="summary_large_image" /><meta name="twitter:site" content="@pierre_dalpra" /><link rel="icon" type="image/png" sizes="16x16" href="/img/favicon16x16.png" /><link rel="icon" type="image/png" sizes="24x24" href="/img/favicon24x24.png" /><link rel="icon" type="image/png" sizes="32x32" href="/img/favicon32x32.png" /><link rel="icon" type="image/png" sizes="48x48" href="/img/favicon48x48.png" /><link rel="icon" type="image/png" sizes="57x57" href="/img/favicon57x57.png" /><link rel="icon" type="image/png" sizes="60x60" href="/img/favicon60x60.png" /><link rel="icon" type="image/png" sizes="64x64" href="/img/favicon64x64.png" /><link rel="icon" type="image/png" sizes="70x70" href="/img/favicon70x70.png" /><link rel="icon" type="image/png" sizes="72x72" href="/img/favicon72x72.png" /><link rel="icon" type="image/png" sizes="76x76" href="/img/favicon76x76.png" /><link rel="icon" type="image/png" sizes="96x96" href="/img/favicon96x96.png" /><link rel="icon" type="image/png" sizes="114x114" href="/img/favicon114x114.png" /><link rel="icon" type="image/png" sizes="120x120" href="/img/favicon120x120.png" /><link rel="icon" type="image/png" sizes="128x128" href="/img/favicon128x128.png" /><link rel="icon" type="image/png" sizes="144x144" href="/img/favicon144x144.png" /><link rel="icon" type="image/png" sizes="150x150" href="/img/favicon150x150.png" /><link rel="icon" type="image/png" sizes="152x152" href="/img/favicon152x152.png" /><link rel="icon" type="image/png" sizes="196x196" href="/img/favicon196x196.png" /><link rel="icon" type="image/png" sizes="310x310" href="/img/favicon310x310.png" /><link rel="icon" type="image/png" sizes="310x150" href="/img/favicon310x150.png" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" /><link rel="stylesheet" href="/highlight/styles/default.css" /><link rel="stylesheet" href="/css/style.css" /><link rel="stylesheet" href="/css/palette.css" /><link rel="stylesheet" href="/css/codemirror.css" /></head><body class="docs"><div id="wrapper"><div id="sidebar-wrapper"><ul id="sidebar" class="sidebar-nav"><li class="sidebar-brand"><a href="/" class="brand"><div class="brand-wrapper"><span>Scalalint</span></div></a></li> <li><a href="/docs/" class="">Getting Started</a></li> <li><a href="/docs/rules.html" class=" active ">Rules</a></li> <li><a href="/docs/motivation.html" class="">Motivation</a></li></ul></div><div id="page-content-wrapper"><div class="nav"><div class="container-fluid"><div class="row"><div class="col-lg-12"><div class="action-menu pull-left clearfix"><a href="#menu-toggle" id="menu-toggle"><i class="fa fa-bars" aria-hidden="true"></i></a></div><ul class="pull-right"><li id="gh-eyes-item" class="hidden-xs"><a href="https://github.com/pdalpra/scalalint"><i class="fa fa-eye"></i><span>WATCH<span id="eyes" class="label label-default">--</span></span></a></li><li id="gh-stars-item" class="hidden-xs"><a href="https://github.com/pdalpra/scalalint"><i class="fa fa-star-o"></i><span>STARS<span id="stars" class="label label-default">--</span></span></a></li></ul></div></div></div></div><div id="content" data-github-owner="pdalpra" data-github-repo="scalalint"><div class="content-wrapper"><section><h1 id="rules">Rules</h1>
+
+<p>The following rules are currently available in Scalalint:</p>
+
+<ul>
+  <li><a href="#scalalintclasses">ScalalintClasses</a></li>
+  <li><a href="#scalalintimports">ScalalintImports</a></li>
+  <li><a href="#scalalintinference">ScalalintInference</a></li>
+  <li><a href="#scalalintpackages">ScalalintPackages</a></li>
+</ul>
+
+<p>Those are only ‘meta rules’, head below to the rules documentation to find which lints and rewrites are available</p>
+
+<h2 id="scalalintclasses">ScalalintClasses</h2>
+
+<h3 id="finalcaseclass">finalCaseClass</h3>
+
+<ul>
+  <li><strong>Kind</strong>: Lint</li>
+  <li><strong>Type</strong>: <code class="highlighter-rouge">Boolean</code></li>
+  <li><strong>Default</strong>: <code class="highlighter-rouge">true</code></li>
+</ul>
+
+<p><strong>Justification</strong>:</p>
+
+<p>Extending case classes can break them in surprising ways, as they define reasonable implementations of <code class="highlighter-rouge">hashCode</code>, <code class="highlighter-rouge">equals</code> and <code class="highlighter-rouge">toString</code> that breaks with inheritance.</p>
+
+<p>For more information and examples, you can have a look at Nicolas Rinaudo’s <a href="https://nrinaudo.github.io/scala-best-practices/tricky_behaviours/final_case_classes.html">excellent Scala best practices article</a>.</p>
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// forbidden by default with ScalalintClasses
+</span><span class="k">case</span> <span class="k">class</span> <span class="nc">Foo</span><span class="o">(</span><span class="n">i</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span>
+</code></pre></div></div>
+<h3 id="leakingsealed">leakingSealed</h3>
+
+<ul>
+  <li><strong>Kind</strong>: Lint</li>
+  <li><strong>Type</strong>: <code class="highlighter-rouge">Boolean</code></li>
+  <li><strong>Default</strong>: <code class="highlighter-rouge">true</code></li>
+</ul>
+
+<p><strong>Justification</strong>:</p>
+
+<p>Sealing a trait or a class ensures that you can’t extend it outside of the file it’s defined in.</p>
+
+<p>However, a sealed trait or class can “leak” if one of its implementing classes or trait isn’t itself final or sealed.
+This can lead to surprising behaviors and silently breaks pattern matching exhaustiveness checking.</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">sealed</span> <span class="k">trait</span> <span class="nc">Foo</span>
+
+<span class="c1">// sealed trait Foo leaks through class 'Bar', forbidden by default with ScalalintClasses 
+</span><span class="k">class</span> <span class="nc">Bar</span> <span class="k">extends</span> <span class="nc">Foo</span>
+<span class="c1">// sealed trait Foo leaks through trait 'Quz', forbidden by default with ScalalintClasses
+</span><span class="k">trait</span> <span class="nc">Quz</span> <span class="k">extends</span> <span class="nc">Foo</span>
+</code></pre></div></div>
+
+<h3 id="removebracesonemptybody">removeBracesOnEmptyBody</h3>
+
+<ul>
+  <li><strong>Kind</strong>: Lint</li>
+  <li><strong>Type</strong>: <code class="highlighter-rouge">Boolean</code></li>
+  <li><strong>Default</strong>: <code class="highlighter-rouge">true</code></li>
+</ul>
+
+<p><strong>Justification</strong>:</p>
+
+<p>If a class/trait has no body, braces are redundant and can be removed.</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Redundant braces, will be removed by removeBracesOnEmptyBody = true
+</span><span class="k">class</span> <span class="nc">Foo</span> <span class="o">{}</span>
+</code></pre></div></div>
+<h3 id="removeemptyconstructor">removeEmptyConstructor</h3>
+
+<ul>
+  <li><strong>Kind</strong>: Lint</li>
+  <li><strong>Type</strong>: <code class="highlighter-rouge">Boolean</code></li>
+  <li><strong>Default</strong>: <code class="highlighter-rouge">true</code></li>
+</ul>
+
+<p><strong>Justification</strong>:</p>
+
+<p>If a class public constructor has no parameters, it is redundant and can be removed.</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Redundant empty constructor, will be removed by removeEmptyConstructor = true
+</span><span class="k">class</span> <span class="nc">Foo</span><span class="o">()</span>
+</code></pre></div></div>
+
+<h2 id="scalalintimports">ScalalintImports</h2>
+
+<h3 id="disableblockimports">disableBlockImports</h3>
+
+<ul>
+  <li><strong>Kind</strong>: Lint</li>
+  <li><strong>Type</strong>: <code class="highlighter-rouge">Boolean</code></li>
+  <li><strong>Default</strong>: <code class="highlighter-rouge">false</code></li>
+</ul>
+
+<p><strong>Justification</strong>:</p>
+
+<p>One might want to disable block imports as a policy and prefer single imports only.</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// would be forbidden with ScalalintImports.disableBlockImports = true
+</span><span class="k">import</span> <span class="nn">scala.util.</span><span class="o">{</span> <span class="nc">Try</span><span class="o">,</span> <span class="nc">Success</span> <span class="o">}</span>
+</code></pre></div></div>
+
+<h3 id="disablerelativeimports">disableRelativeImports</h3>
+
+<ul>
+  <li><strong>Kind</strong>: Lint</li>
+  <li><strong>Type</strong>: <code class="highlighter-rouge">Boolean</code></li>
+  <li><strong>Default</strong>: <code class="highlighter-rouge">true</code></li>
+</ul>
+
+<p><strong>Justification</strong>:</p>
+
+<p>Relative imports are confusing, and pollutes the imports namespace which can introduce shadowing.</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="nn">java.io</span>        <span class="c1">// Imports only a package and no members
+</span><span class="k">import</span> <span class="nn">_root.io.netty</span> <span class="c1">// Need to use _root_ to disambiguate the import
+</span></code></pre></div></div>
+
+<h3 id="disablewildcardimports">disableWildcardImports</h3>
+
+<ul>
+  <li><strong>Kind</strong>: Lint</li>
+  <li><strong>Type</strong>: <code class="highlighter-rouge">Boolean</code></li>
+  <li><strong>Default</strong>: <code class="highlighter-rouge">false</code></li>
+</ul>
+
+<p>Conflicts with <code class="highlighter-rouge">rewriteWildcardThreshold</code>.</p>
+
+<p><strong>Justification</strong>:</p>
+
+<p>One might want to disable wildcard imports as a policy and prefer explicit imports only.</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// would be forbidden with ScalalintImports.disableWildcardImports = true
+</span><span class="k">import</span> <span class="nn">scala.concurrent.duration._</span>
+</code></pre></div></div>
+
+<h3 id="ensureimportsaregrouped">ensureImportsAreGrouped</h3>
+
+<ul>
+  <li><strong>Kind</strong>: Lint</li>
+  <li><strong>Type</strong>: <code class="highlighter-rouge">Boolean</code></li>
+  <li><strong>Default</strong>: <code class="highlighter-rouge">false</code></li>
+</ul>
+
+<p><strong>Justification</strong>:</p>
+
+<p>If imports are not grouped and rather spread throughout the file, knowing what is in scope is difficult.</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="nn">scala.concurrent.duration._</span>
+<span class="k">import</span> <span class="nn">scala.concurrent.Future</span>
+
+<span class="k">object</span> <span class="nc">MyObject</span> <span class="o">{</span>
+  <span class="k">import</span> <span class="nn">java.nio.file.Path</span>    <span class="c1">// would be forbidden with ScalalintImports.ensureImportsAreGrouped = true
+</span>
+  <span class="k">def</span> <span class="nf">deleteFile</span><span class="o">(</span><span class="n">path</span><span class="k">:</span> <span class="kt">Path</span><span class="o">)</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
+    <span class="k">import</span> <span class="nn">java.nio.file.Files</span> <span class="c1">// would be forbidden with ScalalintImports.ensureImportsAreGrouped = true
+</span>    <span class="nv">Files</span><span class="o">.</span><span class="py">deleteIfExists</span><span class="o">(</span><span class="n">path</span><span class="o">)</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h3 id="forbiddenimports">forbiddenImports</h3>
+
+<ul>
+  <li><strong>Kind</strong>: Lint</li>
+  <li><strong>Type</strong>: <code class="highlighter-rouge">List[String]</code></li>
+  <li><strong>Default</strong>: <code class="highlighter-rouge">Nil</code></li>
+</ul>
+
+<p><strong>Justification</strong>:</p>
+
+<p>One might want to define a list of forbidden imports, either as their usage is deprecated or discouraged.
+For example:</p>
+<ul>
+  <li><code class="highlighter-rouge">scala.collection.JavaConversions</code>: deprecated as of Scala 2.12</li>
+  <li><code class="highlighter-rouge">scala.concurrent.ExecutionContext.Implicits.global</code>: Usage of global ExecutionContext might be discouraged</li>
+  <li><code class="highlighter-rouge">sun.misc.Unsafe</code>: Can be dangerous if misused</li>
+</ul>
+
+<h3 id="rewritewildcardthreshold">rewriteWildcardThreshold</h3>
+
+<ul>
+  <li><strong>Kind</strong>: Rewrite</li>
+  <li><strong>Type</strong>: <code class="highlighter-rouge">Int</code>, the maximum number of imports in a block before rewriting to wildcard</li>
+  <li><strong>Default</strong>: Not set</li>
+</ul>
+
+<p>Conflicts with <code class="highlighter-rouge">disableWildcardImports</code>.</p>
+
+<p><strong>Justification</strong>:</p>
+
+<p>When importing many members of a package, it may be simpler to use a wildcard import.</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="nn">scala.concurrent.ExecutionContext.Implicits.global</span>
+<span class="k">import</span> <span class="nn">scala.util.</span><span class="o">{</span> <span class="nc">Try</span><span class="o">,</span> <span class="nc">Success</span><span class="o">,</span> <span class="nc">Failure</span><span class="o">,</span> <span class="nc">Random</span><span class="o">,</span> <span class="nc">Properties</span> <span class="o">}</span>
+<span class="c1">// with ScalaImports.rewriteWildcardThreshold = 5
+</span><span class="k">import</span> <span class="nn">scala.util._</span>
+</code></pre></div></div>
+
+<h2 id="scalalintinference">ScalalintInference</h2>
+
+<h3 id="nopublicinference">noPublicInference</h3>
+
+<ul>
+  <li><strong>Kind</strong>: Lint</li>
+  <li><strong>Type</strong>: <code class="highlighter-rouge">Boolean</code></li>
+  <li><strong>Default</strong>: <code class="highlighter-rouge">false</code></li>
+</ul>
+
+<p><strong>Justification</strong>:</p>
+
+<p>Public members should always have explicit type annotations to ensure that public APIs have documented return types and not risk inferring over specific types.</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">myOption</span> <span class="k">=</span> <span class="nc">Some</span><span class="o">(</span><span class="s">""</span><span class="o">)</span> <span class="c1">// Infers Some[String], not Option[String]
+</span>
+<span class="k">sealed</span> <span class="k">trait</span> <span class="nc">ADT</span>
+<span class="k">case</span> <span class="k">object</span> <span class="nc">A</span> <span class="k">extends</span> <span class="nc">ADT</span>
+<span class="k">case</span> <span class="k">object</span> <span class="nc">B</span> <span class="k">extends</span> <span class="nc">ADT</span>
+
+<span class="k">def</span> <span class="nf">values</span> <span class="k">=</span> <span class="nc">List</span><span class="o">(</span><span class="n">A</span><span class="o">,</span> <span class="n">B</span><span class="o">)</span> <span class="c1">// Infers List[Product with Serializable with ADT], not List[ADT]
+</span></code></pre></div></div>
+
+<h3 id="noinferxxx">noInferXXX</h3>
+
+<ul>
+  <li><strong>Kind</strong>: Lint</li>
+  <li><strong>Type</strong>: <code class="highlighter-rouge">Boolean</code></li>
+  <li><strong>Default</strong>: <code class="highlighter-rouge">true</code>, except <code class="highlighter-rouge">noInferNothing</code></li>
+</ul>
+
+<p><strong>Justification</strong>:</p>
+
+<ul>
+  <li><code class="highlighter-rouge">noInferAny</code>/<code class="highlighter-rouge">noInferAnyVal</code>/<code class="highlighter-rouge">noInferAnyRef</code>/<code class="highlighter-rouge">noInferObject</code>: Inferring those types is most often hint of an code issue, as this means 
+that unrelated types are mixed together and the compiler had to infer one of the root types of Scala/Java type systems</li>
+  <li><code class="highlighter-rouge">noInferProduct</code>/<code class="highlighter-rouge">noInferSerializable</code>: <code class="highlighter-rouge">Product</code> &amp; <code class="highlighter-rouge">Serializable</code> are often inferred by the compiler, eg. when ADTs values are mixed
+with generics are put in a List.</li>
+  <li><code class="highlighter-rouge">noInferNothing</code>: although inferring <code class="highlighter-rouge">Nothing</code> could be hint of an issue, it is however common to use it and leaves ‘holes’ in types
+that can filled later, eg. <code class="highlighter-rouge">Right("")</code> infers <code class="highlighter-rouge">Either[Nothing, String]</code>, with <code class="highlighter-rouge">Left</code> being filled later).</li>
+</ul>
+
+<h2 id="scalalintpackages">ScalalintPackages</h2>
+
+<h3 id="disablerelativepackages">disableRelativePackages</h3>
+
+<ul>
+  <li><strong>Kind</strong>: Lint</li>
+  <li><strong>Type</strong>: <code class="highlighter-rouge">Boolean</code></li>
+  <li><strong>Default</strong>: <code class="highlighter-rouge">true</code></li>
+</ul>
+
+<p><strong>Justification</strong>:</p>
+
+<p>Relative packages implicitly imports all the contents of each package, which can be confusing.</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">package</span> <span class="nn">foo.bar</span> <span class="c1">// =&gt; Implicitly imports foo.bar._
+</span><span class="k">package</span> <span class="nn">quz</span>     <span class="c1">// =&gt; Implicitly imports foo.bar.quz._
+</span></code></pre></div></div>
+
+</section><div class="edit-button"><a href="https://github.com/pdalpra/scalalint/edit/master/docs/src/main/tut/docs/rules.md" class="btn-sm btn-info">Improve this Page</a></div></div></div></div></div><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script><script src="/highlight/highlight.pack.js"></script><script>hljs.configure({languages:['scala','java','bash']});
+hljs.initHighlighting();
+              </script><script>((window.gitter = {}).chat = {}).options = {
+room: 'scalalint/scalalint'};</script><script src="https://sidecar.gitter.im/dist/sidecar.v1.js"></script><script src="/js/main.js"></script></body></html>
