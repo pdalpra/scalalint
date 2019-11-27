@@ -1,6 +1,7 @@
 /*
 rule = ScalalintInference
 */
+package inference
 
 import scala.language.experimental.macros
 

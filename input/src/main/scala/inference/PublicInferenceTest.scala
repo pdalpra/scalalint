@@ -3,7 +3,7 @@ rule = ScalalintInference
 ScalalintInference.noPublicInference = true
 ScalalintInference.noInferNothing  = false
 */
-
+package inference
 import scala.language.experimental.macros
 
 object PublicInferenceTest {

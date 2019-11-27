@@ -2,6 +2,7 @@
 rule = ScalalintImports
 ScalalintImports.ensureImportsAreGrouped = true
  */
+package imports
 
 import java.util.ArrayList
 

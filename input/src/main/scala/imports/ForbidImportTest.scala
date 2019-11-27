@@ -5,6 +5,7 @@ Scalalintimports.disableRelativeImports = true
 ScalalintImports.disableWildcardImports = true
 ScalalintImports.forbiddenImports = ["sun.misc.Unsafe"]
  */
+package imports
 
 import java.util /* assert: ScalalintImports
        ^^^^^^^^

@@ -1,7 +1,7 @@
 /*
 rule = ScalalintClasses
  */
-
+package classes
 
 sealed trait Trait
 sealed trait Lower extends Trait

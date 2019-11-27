@@ -1,7 +1,7 @@
 /*
 rule = ScalalintPackages
  */
-package foo
+package packages
 package bar /* assert: ScalalintPackages
 ^^^^^^^^^^^
 
