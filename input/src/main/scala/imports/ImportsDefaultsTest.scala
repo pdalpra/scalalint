@@ -1,6 +1,8 @@
 /*
 rule = ScalalintImports
  */
+package imports
+
 import sun.misc /* assert: ScalalintImports
        ^^^^^^^^
 Relative imports are disallowed

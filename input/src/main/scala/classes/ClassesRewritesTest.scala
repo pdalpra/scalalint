@@ -1,6 +1,8 @@
 /*
 rule = ScalalintClasses
  */
+package classes
+
 class AA(i: Int) {
 
 }

@@ -1,3 +1,5 @@
+package classes
+
 class AA(i: Int)
 
 trait BB
