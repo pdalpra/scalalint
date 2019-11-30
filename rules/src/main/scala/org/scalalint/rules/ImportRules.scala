@@ -45,6 +45,7 @@ class ImportRules(config: ImportRulesConfiguration)
     val imports             = doc.tree.collect { case tree: Import => tree }
     val importedPackages    = imports.flatMap(_.importers.map(_.ref.syntax))
     val topLevelImportGroup = findTopLevelImportGroup(doc, imports)
+    val sortedImportsPatch  = sortImports(topLevelImportGroup)
 
     doc.tree.collect {
       case tree: Import =>
@@ -58,7 +59,7 @@ class ImportRules(config: ImportRulesConfiguration)
           checkRelativeImport(importer, importedPackages),
           rewriteToWildcardImport(importer)
         ).asPatch
-    }.asPatch
+    }.asPatch + sortedImportsPatch
   }
 
   private def checkForbiddenImport(importer: Importer): Patch =
@@ -104,6 +105,16 @@ class ImportRules(config: ImportRulesConfiguration)
   private def findTopLevelImportGroup(doc: SemanticDocument, imports: List[Import]): List[Import] =
     if (imports.size == 1) imports
     else longestImportChain(imports, doc, Nil)
+
+  private def sortImports(imports: List[Import])(implicit doc: SemanticDocument): Patch =
+    if (config.importsOrder.nonEmpty && !areImportsSorted(imports)) {
+      val firstImportToken = imports.headOption.flatMap(_.tokens.headOption).get // FIXME
+      val lastImportToken  = imports.lastOption.flatMap(_.tokens.headOption).get // FIXME
+      Patch.removeTokens(doc.tokenList.slice(firstImportToken, lastImportToken))
+    } else Patch.empty
+
+  private def areImportsSorted(imports: List[Import]): Boolean =
+    true
 
   @tailrec
   private def longestImportChain(imports: List[Import], doc: SemanticDocument, acc: List[Import]): List[Import] =

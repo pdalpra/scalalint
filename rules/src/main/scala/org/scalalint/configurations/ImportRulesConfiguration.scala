@@ -28,6 +28,7 @@ final case class ImportRulesConfiguration(
     disableRelativeImports: Boolean = true,
     disableWildcardImports: Boolean = false,
     ensureImportsAreGrouped: Boolean = false,
+    importsOrder: List[String] = Nil,
     forbiddenImports: List[String] = Nil,
     rewriteWildcardThreshold: Option[Int] = None
 )
