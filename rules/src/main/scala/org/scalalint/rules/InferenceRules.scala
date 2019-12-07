@@ -45,7 +45,7 @@ class InferenceRules(config: InferenceRulesConfiguration)
     doc.tree.collect {
       case term: Term =>
         checkInferredTypes(term)
-      case decl: Defn.Val =>
+      case decl: Defn.Val if decl.pats.forall(_.isNot[Pat.Extract]) =>
         List(checkPublicInference(decl), checkInferredTypes(decl)).asPatch
       case decl: Defn.Var =>
         List(checkPublicInference(decl), checkInferredTypes(decl)).asPatch
