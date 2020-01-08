@@ -5,6 +5,7 @@ ScalalintInference.noInferNothing  = false
 */
 package inference
 import scala.language.experimental.macros
+import scala.util.matching.Regex
 
 object PublicInferenceTest {
 
@@ -25,4 +26,14 @@ Public members must have explicit type annotations */
   var barTyped: String = "test"
   def quzTyped(i: Int): Int = i + 1
   def macTyped: Int = macro ???
+
+  val aRegex: Regex = "^(.*)-some-string-(.*)$".r
+  val anotherRegex: Regex = "^(.*)-some-string-(.*)$".r
+  val e: (String, Int) = ("", 1)
+
+  def aMethod(aString: String): String = {
+    val aRegex(left, right) = aString
+    val (a, b) = e
+    s"${left}_${right}"
+  }
 }

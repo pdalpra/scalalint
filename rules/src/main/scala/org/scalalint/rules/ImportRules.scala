@@ -82,18 +82,20 @@ class ImportRules(config: ImportRulesConfiguration)
   private def checkRelativeImport(importer: Importer, importedPackages: List[String])(
       implicit doc: SemanticDocument
   ): Patch =
-    (for {
-      importee   <- importer.importees
-      symbol     <- importee.symbol.asNonEmpty.toList
-      symbolInfo <- symbol.info
-    } yield {
-      val importedPackage = if (symbolInfo.isPackage) symbol else symbol.owner
-      val packageName     = importedPackage.normalized.value.init // drop the final '.' from normalized package symbol
-      if (!importedPackages.contains(packageName))
-        Patch.lint(RelativeImport(importer))
-      else
-        Patch.empty
-    }).asPatch
+    if (config.disableRelativeImports)
+      (for {
+        importee   <- importer.importees
+        symbol     <- importee.symbol.asNonEmpty.toList
+        symbolInfo <- symbol.info
+      } yield {
+        val importedPackage = if (symbolInfo.isPackage) symbol else symbol.owner
+        val packageName     = importedPackage.normalized.value.init // drop the final '.' from normalized package symbol
+        if (!importedPackages.contains(packageName))
+          Patch.lint(RelativeImport(importer))
+        else
+          Patch.empty
+      }).asPatch
+    else Patch.empty
 
   private def checkImportsAreGrouped(tree: Import, topLevelImportGroup: List[Import]): Patch =
     if (config.ensureImportsAreGrouped && !topLevelImportGroup.contains(tree))

@@ -31,7 +31,7 @@ rules = [
   ...
 ]
 
-Scalalint.disableRelativeImports = true
+ScalalintImports.disableRelativeImports = true
 
 ```
 
