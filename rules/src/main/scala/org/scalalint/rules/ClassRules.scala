@@ -65,9 +65,11 @@ class ClassRules(config: ClassRulesConfiguration)
       Patch.empty
 
   private def checkLeakingSealed(defn: ClassOrTrait, sealedDefs: Set[Symbol])(implicit doc: SemanticDocument): Patch =
-    if (config.leakingSealed &&
-        defn.symbol.info.exists(info => !(info.isFinal || info.isSealed)) &&
-        defn.symbol.classHierarchy.intersect(sealedDefs).nonEmpty)
+    if (
+      config.leakingSealed &&
+      defn.symbol.info.exists(info => !(info.isFinal || info.isSealed)) &&
+      defn.symbol.classHierarchy.intersect(sealedDefs).nonEmpty
+    )
       Patch.lint(LeakingSealed(defn))
     else
       Patch.empty
@@ -103,7 +105,7 @@ class ClassRules(config: ClassRulesConfiguration)
     for {
       rightBrace <- defn.tokens.lastOption.collect { case brace: RightBrace => brace }
       leftBrace  <- doc.matchingParens.open(rightBrace)
-      bodyTokens = doc.tokenList.slice(leftBrace, doc.tokenList.next(rightBrace))
+      bodyTokens  = doc.tokenList.slice(leftBrace, doc.tokenList.next(rightBrace))
     } yield bodyTokens
 
 }

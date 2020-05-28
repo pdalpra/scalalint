@@ -79,8 +79,8 @@ class ImportRules(config: ImportRulesConfiguration)
     else
       Patch.empty
 
-  private def checkRelativeImport(importer: Importer, importedPackages: List[String])(
-      implicit doc: SemanticDocument
+  private def checkRelativeImport(importer: Importer, importedPackages: List[String])(implicit
+      doc: SemanticDocument
   ): Patch =
     if (config.disableRelativeImports)
       (for {
